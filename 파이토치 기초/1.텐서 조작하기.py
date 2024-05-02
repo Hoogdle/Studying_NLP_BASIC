@@ -23,3 +23,128 @@ print('t[2:5] t[4:-1] = ', t[2:5],t[4:-1]) #t[2:5] t[4:-1] =  [2 3 4] [4 5]
 
 
 ### 2차원 텐서
+t = np.array([[1,2,3],[4,5,6],[7,8,9],[10,11,12]])
+print(t)
+# [[ 1  2  3]
+#  [ 4  5  6]
+#  [ 7  8  9]
+#  [10 11 12]]
+print('Rank of t : ',t.ndim)
+print('Shape of t : ',t.shape)
+# Rank of t :  2
+# Shape of t :  (4, 3)
+
+### Pytorch에서의 텐서
+import torch
+
+### 1차원 텐서
+t = torch.FloatTensor([0,1,2,3,4,5,6])
+print(t) 
+#tensor([0., 1., 2., 3., 4., 5., 6.])
+
+print(t.dim()) #1
+print(t.shape) #torch.Size([7]) #shape
+print(t.size()) #torch.Size([7]) #shape(위와 동일)
+
+print(t[0],t[1],t[-1]) #tensor(0.) tensor(1.) tensor(6.)
+print(t[2:5],t[4:-1]) #tensor([2., 3., 4.]) tensor([4., 5.])
+print(t[:2],t[3:]) #tensor([0., 1.]) tensor([3., 4., 5., 6.])
+
+
+### 2차원 텐서
+t = torch.FloatTensor([[1,2,3],
+                       [4,5,6],
+                       [7,8,9],
+                       [10,11,12]])
+print(t)
+# tensor([[ 1.,  2.,  3.],
+#         [ 4.,  5.,  6.],
+#         [ 7.,  8.,  9.],
+#         [10., 11., 12.]])
+
+print(t.dim()) #2
+print(t.size()) #torch.Size([4, 3])
+
+print(t[:,1]) #tensor([ 2.,  5.,  8., 11.])
+print(t[:,1].size()) #torch.Size([4]) (위의 경우의 크기)
+
+print(t[:,:-1])
+# tensor([[ 1.,  2.],
+#         [ 4.,  5.],
+#         [ 7.,  8.],
+#         [10., 11.]])
+
+
+### 브로드 캐스팅
+# 행렬의 덧셈,뺄셈 에서는 두 행렬 A,B의 크기가 같아야 하며 곱셈을 할 때는 A의 열과 B의 행의 크기가 같아야 한다.(in 수학적개념)
+# 딥러닝에서는 크기가 다른 텐서에 대한 사칙연산을 하는 경우가 불가피.... => 자동으로 크기를 맞춰주는 [브로드 캐스팅]
+
+m1 = torch.FloatTensor([[3,3]])
+m2 = torch.FloatTensor([[2,2]])
+print(m1+m2) #tensor([[5., 5.]])
+
+### 크기가 다른 텐서간 연산
+# Vector + Scalar
+m1 = torch.FloatTensor([[1,2]])
+m2 = torch.FloatTensor([3]) # [3] -> [3,3]
+print(m1+m2) #tensor([[4., 5.]])
+
+print(m1.size()) #torch.Size([1, 2])
+print(m2.size()) #torch.Size([1]) #연산을 위해 m2를 [1,2]로 브로드 캐스팅!
+
+# Vector [2,1] x Vector [1,2]
+
+m1 = torch.FloatTensor([[1],[2]])
+m2 = torch.FloatTensor([[1,2]])
+print(m1.size()) #torch.Size([2, 1])
+print(m2.size()) #torch.Size([1, 2])
+print(m1+m2)
+# tensor([[2., 3.],
+#         [3., 4.]])
+
+# m1
+# [1]
+# [2]
+# ==> [[1,1]
+#      [2,2]]
+
+# m2
+# [1,2]
+# ==> [[1,2]
+#      [1,2]]
+
+# 브로드캐스팅은 '자동'으로 수행되므로 사용에 주의하도록 하자!
+
+
+### 행렬곱 vs 곱셈의 차이
+# 행렬곱셈(.matmul) 원소별 곱셈(.mul)
+
+m1 = torch.FloatTensor([[1,2],[3,4]])
+m2 = torch.FloatTensor([[1],[2]])
+print('m1 size : ',m1.shape) #m1 size :  torch.Size([2, 2])
+print('m2 size : ',m2.shape) #m2 size :  torch.Size([2, 1])
+print(m1.matmul(m2)) # matmul은 '행렬곱'을 수행한다.
+# tensor([[ 5.],
+#         [11.]])
+
+### * or .mul() => 원소별 곱으로 동일한 크기의 행렬이 동일한 위치에 있는 원소별곱
+# 행렬의 크기가 동일하지 않으면 브로딩캐스팅 후 연산된다.
+print(m1*m2)
+# tensor([[1., 2.],
+#         [6., 8.]])
+print(m1.mul(m2))
+# tensor([[1., 2.],
+#         [6., 8.]])
+
+
+
+### 평균(Mean)
+t = torch.FloatTensor([1,2])
+print(t.mean()) #tensor(1.5000)
+
+t = torch.FloatTensor([[1,2],[3,4]])
+print(t.mean()) #tensor(2.5000)
+
+print(t.mean(dim=0)) # 첫 번째 차원(dim=0)을 제거 => (2,2) -> (1,2)==(2,)==벡터
+# tensor([2., 3.])
+
