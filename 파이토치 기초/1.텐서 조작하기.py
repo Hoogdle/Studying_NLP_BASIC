@@ -147,4 +147,48 @@ print(t.mean()) #tensor(2.5000)
 
 print(t.mean(dim=0)) # 첫 번째 차원(dim=0)을 제거 => (2,2) -> (1,2)==(2,)==벡터
 # tensor([2., 3.])
+print(t.mean(dim=1))
+# tensor([1.5000, 3.5000])
+# 차원이 삭제되면서 삭제되는 데이터가 생존하는 데이터에 정사영된다. 그 후 평균이 계산됨.
+print(t.mean(dim=-1)) # 마지막 차원. 즉, 열의 차원을 제거
+# tensor([1.5000, 3.5000])
 
+
+
+### 덧셈(Sum)
+t = torch.FloatTensor([[1,2],[3,4]])
+print(t)
+# tensor([[1., 2.],
+#         [3., 4.]])
+print(t.sum()) # 단순 모든 원소의 합
+# tensor(10.)
+print(t.sum(dim=0)) # 행을 제거하여 덧셈
+# tensor([4., 6.])
+print(t.sum(dim=1)) # 열을 제거하여 덧셈
+# tensor([3., 7.])
+print(t.sum(dim=-1)) # 마지막 차원(열)을 제거하여 덧셈
+# tensor([3., 7.])
+
+
+### 최대(MAX)와 아그맥스(ArgMAX)
+# MAX는 원소의 최대값을, ArgMAX는 최댓값의 원소의 인덱스를 리턴
+t = torch.FloatTensor([[1,2],[3,4],[5,6]])
+print(t)
+# tensor([[1., 2.],
+#         [3., 4.],
+#         [5., 6.]])
+print(t.max()) #tensor(6.)
+
+# .max() 함수의 인자로 'dim'을 주면 argmax도 함께 반환된다.
+print(t.max(dim=0)) # 없애는 차원(행)을 기준으로 봤을 때 [5,6]은 각 열의 2번째 행에 존재
+# torch.return_types.max(
+# values=tensor([5., 6.]),
+# indices=tensor([2, 2]))
+
+print(t.max(dim=1)) # 없애는 차원(열)을 기준으로 봤을 때 [2,4,6]은 각 행의 1번째 열에 존재
+# torch.return_types.max(
+# values=tensor([2., 4., 6.]),
+# indices=tensor([1, 1, 1]))
+
+print('Max : ',t.max(dim=0)[0]) #Max :  tensor([5., 6.])
+print('Arg Max : ',t.max(dim=0)[1]) #Arg Max :  tensor([2, 2])
